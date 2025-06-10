@@ -8,6 +8,12 @@ NLPSM is an innovative project designed to enable non-technical users to interac
 - **GPT Integration**: Utilizes GPT to understand and process natural language commands.
 - **FastAPI Framework**: Built on FastAPI for robust, scalable, and fast web services.
 
+### Modules
+The repository contains platform specific FastAPI apps:
+
+- `Linux/lili.py` — exposes an endpoint to run shell commands on Linux systems and logs each invocation.
+- `Windows/lili.py` — provides similar functionality for Windows using PowerShell.
+
 ## Getting Started
 
 ### Prerequisites
@@ -40,6 +46,15 @@ This will start the FastAPI server on `http://127.0.0.1:8000`. The server will a
 You can interact with the system by sending HTTP requests to `http://127.0.0.1:8000`. Example commands include:
 - **Fetch System Date**: `GET /date`
 - **List Directory Contents**: `GET /list-dir?path=<path>`
+
+### Running Tests
+Install development dependencies and execute the test suite with `pytest`:
+
+```bash
+pip install -r requirements.txt
+pip install pytest
+pytest
+```
 
 ## Contributing
 Contributions are welcome! Please fork the repository and submit pull requests with your proposed changes.

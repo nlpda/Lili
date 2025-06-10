@@ -1,6 +1,9 @@
+"""FastAPI app exposing endpoints for Windows command execution."""
+
+from __future__ import annotations
+
+from asyncio.subprocess import PIPE, create_subprocess_exec
 from fastapi import FastAPI, HTTPException
-from subprocess import Popen, PIPE
-import shlex
 
 # Initialize the FastAPI app
 app = FastAPI()
@@ -16,13 +19,20 @@ async def run_powershell_command(cmd: str):
     if "dangerous_keyword" in cmd.lower():
         raise HTTPException(status_code=400, detail="Unsafe command blocked")
 
-    process = Popen(["powershell", "-Command", cmd], stdout=PIPE, stderr=PIPE)
-    stdout, stderr = process.communicate()
+    process = await create_subprocess_exec(
+        "powershell",
+        "-Command",
+        cmd,
+        stdout=PIPE,
+        stderr=PIPE,
+    )
+    stdout_bytes, stderr_bytes = await process.communicate()
+    stdout, stderr = stdout_bytes.decode(), stderr_bytes.decode()
 
     if process.returncode != 0:
-        raise HTTPException(status_code=500, detail=f"PowerShell error: {stderr.decode()}")
+        raise HTTPException(status_code=500, detail=f"PowerShell error: {stderr.strip()}")
 
-    return {"message": stdout.decode()}
+    return {"message": stdout}
 
 # Function to read an item without authentication
 @app.get("/items/{item_id}")
